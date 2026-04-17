@@ -1,16 +1,36 @@
 from django.urls import path
-from . import views
+from .views import (
+    CategoryViewSet,
+    ProductViewSet,
+    ReviewViewSet,
+    CategoryCountAPIView,
+    ProductReviewAPIView
+)
 
 urlpatterns = [
-    path('categories/', views.category_list_api_view),
-    path('categories/<int:id>/', views.category_detail_api_view),
+    # CATEGORY
+    path('categories/', CategoryViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path('categories/<int:id>/', CategoryViewSet.as_view({
+        'get': 'retrieve',
+        'put': 'update',
+        'delete': 'destroy'
+    })),
+    path('categories/count/', CategoryCountAPIView.as_view()),
 
-    path('products/', views.product_list_api_view),
-    path('products/<int:id>/', views.product_detail_api_view),
+    # PRODUCT
+    path('products/', ProductViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path('products/<int:id>/', ProductViewSet.as_view({
+        'get': 'retrieve',
+        'put': 'update',
+        'delete': 'destroy'
+    })),
+    path('products/reviews/', ProductReviewAPIView.as_view()),
 
-    path('reviews/', views.review_list_api_view),
-    path('reviews/<int:id>/', views.review_detail_api_view),
-
-    path('categories/count/', views.category_with_count_api_view),
-    path('products/reviews/', views.product_reviews_api_view),
+    # REVIEW
+    path('reviews/', ReviewViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path('reviews/<int:id>/', ReviewViewSet.as_view({
+        'get': 'retrieve',
+        'put': 'update',
+        'delete': 'destroy'
+    })),
 ]
