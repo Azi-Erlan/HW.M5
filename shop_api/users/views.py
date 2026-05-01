@@ -5,6 +5,7 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import CreateAPIView
+from drf_yasg.utils import swagger_auto_schema
 
 from .serializers import (
     RegisterValidateSerializer,
@@ -82,6 +83,7 @@ class RegistrationAPIView(CreateAPIView):
 
 
 class ConfirmUserAPIView(APIView):
+    @swagger_auto_schema(request_body=ConfirmationSerializer)
     def post(self, request):
         serializer = ConfirmationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
