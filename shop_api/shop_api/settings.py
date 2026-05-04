@@ -38,7 +38,21 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication'
+        # 'rest_framework.authentication.SessionAuthentication',
     ]
+}
+
+QUERYCOUNT = {
+    "THRESHOLDS": {
+        "MEDIUM": 50,
+        "HIGH": 200,
+        "MIN_TIME_TO_LOG": 0,
+        "MIN_QUERY_COUNT_TO_LOG": 0,
+    },
+    "IGNORE_REQUEST_PATTERNS": [],
+    "IGNORE_SQL_PATTERNS": [],
+    "DISPLAY_DUPLICATES": None,
+    "RESPONSE_HEADER": "X-DjangoQueryCount-Count",
 }
 
 MIDDLEWARE = [
@@ -131,3 +145,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "AuthToken": {"type": "apiKey", "name": "Authorization", "in": "header"}
+    }
+}

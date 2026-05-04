@@ -3,7 +3,8 @@ from rest_framework.exceptions import ValidationError
 from .models import Category, Product, Review
 
 
-class CategoryListSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Category
         fields = 'id name'.split()
@@ -23,7 +24,7 @@ class CategoryWithCountSerializer(serializers.ModelSerializer):
         fields = 'id name products_count'.split()
 
 
-class ProductListSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = 'id title price category'.split()
@@ -41,7 +42,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = 'id text stars'.split()
 
 
-class ProductReviewSerializer(serializers.ModelSerializer):
+class ProductWithReviewsSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True)
     rating = serializers.FloatField(read_only=True)
 
@@ -70,9 +71,11 @@ class CategoryValidateSerializer(serializers.Serializer):
 class ProductValidateSerializer(serializers.Serializer):
     title = serializers.CharField(required=True, min_length=2, max_length=255)
     description = serializers.CharField(required=True)
-    price = serializers.FloatField(min_value=0)
-    category_id = serializers.IntegerField()
-
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)    
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        write_only=True
+    )
     def validate_category_id(self, category_id):
         try:
             Category.objects.get(id=category_id)
