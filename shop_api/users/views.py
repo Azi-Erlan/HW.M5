@@ -7,16 +7,20 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .models import ConfirmationCode
 from .serializers import (
     AuthValidateSerializer,
     ConfirmationSerializer,
     RegisterValidateSerializer,
+    CustomTokenObtainPairSerializer,
 )
 
 CustomUser = get_user_model()
 
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 class AuthorizationAPIView(CreateAPIView):
     serializer_class = AuthValidateSerializer
@@ -52,11 +56,15 @@ class RegistrationAPIView(CreateAPIView):
 
         email = serializer.validated_data["email"]
         password = serializer.validated_data["password"]
+        birthdate = serializer.validated_data["birthdate"]
 
         # Use transaction to ensure data consistency
         with transaction.atomic():
             user = CustomUser.objects.create_user(
-                email=email, password=password, is_active=False
+                email=email, 
+                password=password, 
+                birthdate=birthdate,
+                is_active=False
             )
 
             # Create a random 6-digit code

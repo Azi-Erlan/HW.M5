@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from common.permissions import CanEditInSomeTime, IsAnonymous, IsOwner, IsModerator
+from common.validators import validate_user_age
 
 from .models import Category, Product, Review
 from .serializers import (
@@ -77,8 +78,10 @@ class ProductListCreateAPIView(ListCreateAPIView):
     pagination_class = CustomPagination
     permission_classes = [(IsOwner | IsAnonymous) & IsModerator]
     def post(self, request, *args, **kwargs):
+        email = request.auth.get('email')
         serializer = ProductValidateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        validate_user_age(request.user)
 
         # Get validated data
         title = serializer.validated_data.get("title")

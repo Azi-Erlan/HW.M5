@@ -1,5 +1,7 @@
 from pathlib import Path
 import os
+from datetime import timedelta
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,16 +30,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'product',
     'users',
-    'rest_framework.authtoken',
     'drf_yasg',
+    
     
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication'
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
     ]
 }
@@ -150,4 +156,12 @@ SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
         "AuthToken": {"type": "apiKey", "name": "Authorization", "in": "header"}
     }
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60000),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
 }
