@@ -16,6 +16,7 @@ from .serializers import (
     RegisterValidateSerializer,
     CustomTokenObtainPairSerializer,
 )
+from django.core.cache import cache
 
 CustomUser = get_user_model()
 
@@ -70,8 +71,11 @@ class RegistrationAPIView(CreateAPIView):
             # Create a random 6-digit code
             code = "".join(random.choices(string.digits, k=6))
 
-            confirmation_code = ConfirmationCode.objects.create(user=user, code=code)
-
+            cache.set(
+                f"confirmation_code_{user.id}",
+                code,
+                timeout=300
+            )
         return Response(
             status=status.HTTP_201_CREATED,
             data={"user_id": user.id, "confirmation_code": code},
@@ -86,6 +90,15 @@ class ConfirmUserAPIView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         user_id = serializer.validated_data["user_id"]
+        code = serializer.validated_data["code"]
+
+        saved_code = cache.get(f"confirmation_code_{user_id}")
+
+        if saved_code != code:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Неверный код подтверждения"},
+            )
 
         with transaction.atomic():
             user = CustomUser.objects.get(id=user_id)
@@ -94,8 +107,8 @@ class ConfirmUserAPIView(CreateAPIView):
 
             token, _ = Token.objects.get_or_create(user=user)
 
-            ConfirmationCode.objects.filter(user=user).delete()
-
+            cache.delete(f"confirmation_code_{user.id}")
+            
         return Response(
             status=status.HTTP_200_OK,
             data={
