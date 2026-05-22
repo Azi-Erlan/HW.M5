@@ -1,5 +1,6 @@
 
 services:
+
   web:
     build:
       context: .
@@ -14,7 +15,6 @@ services:
       - redis
     command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
-
   db:
     image: postgres:14
     environment:
@@ -24,11 +24,22 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-
   redis:
     image: redis:7
     volumes:
       - redis_data:/data
+
+  celery_worker:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    command: celery -A shop_api worker --loglevel=info
 
   celery_flower:
     build:
@@ -42,8 +53,8 @@ services:
     command: celery -A shop_api flower --loglevel=info
     ports:
       - "5566:5555"
-  
-  celery_beate:
+
+  celery_beat:
     build:
       context: .
     env_file:
@@ -52,8 +63,8 @@ services:
       - .:/app
     depends_on:
       - redis
-    command: celery -A shop_api beate --loglevel=info
-
+      - db
+    command: celery -A shop_api beat --loglevel=info
 
 volumes:
   db_data:
