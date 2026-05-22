@@ -1,0 +1,60 @@
+
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - "8088:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+
+  redis:
+    image: redis:7
+    volumes:
+      - redis_data:/data
+
+  celery_flower:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    command: celery -A shop_api flower --loglevel=info
+    ports:
+      - "5566:5555"
+  
+  celery_beate:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    command: celery -A shop_api beate --loglevel=info
+
+
+volumes:
+  db_data:
+  redis_data:
