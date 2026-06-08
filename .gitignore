@@ -5,23 +5,27 @@ __pycache__/
 *.pyd
 
 # Virtual environment
-myenv/
 venv/
 env/
+myenv/
+
+# Environment variables
+.env
 
 # Django
 db.sqlite3
 *.sqlite3
 
-# Migrations (иногда можно не игнорировать, но для учебы норм)
+# Migrations
 */migrations/*
 !*/migrations/__init__.py
 
-# Static files
+# Static & Media
 staticfiles/
-
-# Media files
 media/
+
+# Celery
+celerybeat-schedule
 
 # IDE
 .vscode/
