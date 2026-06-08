@@ -82,7 +82,7 @@ shop_api/
 
 ```bash
 git clone https://github.com/Azi-Erlan/shop-api.git
-cd shop-api
+cd shop-api/shop_api
 ```
 
 ### Create environment variables
@@ -112,6 +112,7 @@ GOOGLE_CLIENT_ID=
 ### Run with Docker
 
 ```bash
+cd shop_api
 docker compose up --build
 ```
 
