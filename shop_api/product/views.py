@@ -21,7 +21,7 @@ from .serializers import (
     ReviewValidateSerializer,
 )
 from django.core.cache import cache
-from users.tasks import print_hello
+# from users.tasks import print_hello
 
 PAGE_SIZE = 10
 
@@ -101,7 +101,7 @@ class ProductListCreateAPIView(ListCreateAPIView):
             category=category,
             owner=request.user,
         )
-        print_hello.delay()
+        # print_hello.delay()
 
 
         return Response(

@@ -4,22 +4,22 @@ from django.conf import settings
 from django.utils import timezone
 
 
-@shared_task
-def send_test_email():
+# @shared_task
+# def send_test_email():
 
-    send_mail(
-        subject="Celery Test",
-        message="Мой тестовый email через Celery",
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=["your_email@gmail.com"],
-        fail_silently=False,
-    )
+#     send_mail(
+#         subject="Celery Test",
+#         message="Мой тестовый email через Celery",
+#         from_email=settings.EMAIL_HOST_USER,
+#         recipient_list=["your_email@gmail.com"],
+#         fail_silently=False,
+#     )
 
-    return "OK"
+#     return "OK"
 
-@shared_task
-def print_hello():
-    print(f'Celery работает! Время: {timezone.now()}')
+# @shared_task
+# def print_hello():
+#     print(f'Celery работает! Время: {timezone.now()}')
 
 
 @shared_task
@@ -52,8 +52,7 @@ def send_report_email():
         message="Важное",
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[
-            "bkaizirek2002@gmail.com",
-            "abdillaevamedina6@gmail.com",
+        
         ],
         fail_silently=False,
     )

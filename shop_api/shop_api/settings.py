@@ -149,7 +149,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = 'static'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = 'media'
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -187,11 +192,11 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-CELERY_BEAT_SCHEDULE = {
-    "print-hello-every-minute": {
-        "task": "users.tasks.print_hello",
-        "schedule": crontab(minute="*/1"),
-    },
-}
+# CELERY_BEAT_SCHEDULE = {
+#     "print-hello-every-minute": {
+#         "task": "users.tasks.print_hello",
+#         "schedule": crontab(minute="*/1"),
+#     },
+# }
